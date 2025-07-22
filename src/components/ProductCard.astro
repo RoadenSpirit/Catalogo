@@ -1,0 +1,46 @@
+---
+const { product } = Astro.props;
+const categoryColors = {
+  'Electronics': 'bg-blue-500',
+  'Fashion': 'bg-pink-500',
+  'Home & Garden': 'bg-green-500',
+  'Sports': 'bg-orange-500',
+  'Books': 'bg-purple-500',
+  'Beauty': 'bg-rose-500'
+};
+---
+
+<xaiArtifact artifact_id="800c9673-b429-45f0-a1b3-45aa2d5908a2" artifact_version_id="e27bbecb-fcba-4bfb-8be4-a81b5059543d" title="ProductCard.astro" contentType="text/html">
+<article class="group flex flex-col bg-white/95 rounded-3xl shadow-lg border-2 border-gray-700/30 transition-all duration-400 ease-in-out hover:-translate-y-3 hover:scale-105 hover:shadow-2xl hover:shadow-blue-500/20 min-h-[400px] max-w-[300px] relative mx-auto overflow-hidden">
+  <div class="relative flex-[3] aspect-[4/3] max-h-[300px] bg-gray-100 flex items-center justify-center overflow-hidden border border-gray-200/50 sm:max-h-[250px]">
+    <img 
+      src={product.image}
+      alt={product.name}
+      class="w-full h-full object-contain object-center p-4 sm:p-3"
+      loading="lazy"
+    />
+    <div class="absolute inset-0 bg-gradient-to-b from-transparent to-black/10 opacity-0 transition-opacity duration-300 ease-in-out group-hover:opacity-50"></div>
+  </div>
+  
+  <div class="flex-1 p-6 sm:p-5">
+    <div class="flex justify-between items-start gap-2 mb-4">
+      <h3 class="text-lg font-semibold text-gray-800 leading-tight flex-1 sm:text-base">{product.name}</h3>
+      <span class={`${categoryColors[product.category] || 'bg-gray-500'} text-white text-xs font-medium uppercase tracking-wider px-3 py-1 rounded-full flex-shrink-0`}>
+        {product.category}
+      </span>
+    </div>
+    
+    <div class="flex justify-between items-center">
+      <span class="text-xl font-bold text-indigo-600 sm:text-lg">${product.price}</span>
+      <button 
+        class="bg-gradient-to-br from-indigo-500 to-purple-600 text-white font-medium py-3 px-5 rounded-full flex items-center gap-2 text-sm transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-lg active:translate-y-0"
+        aria-label={`Add ${product.name} to cart`}
+      >
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 5v14M5 12h14"/>
+        </svg>
+        Add
+      </button>
+    </div>
+  </div>
+</article>

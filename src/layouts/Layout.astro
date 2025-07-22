@@ -1,0 +1,145 @@
+---
+export interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { 
+  title = 'Modern Product Catalog', 
+  description = 'Discover amazing products in our modern catalog'
+} = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- SEO Meta Tags -->
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+  </head>
+  <body>
+    <div class="app-container">
+      <div class="background-blur"></div>
+      <div class="background-gradient"></div>
+      <div class="content-wrapper">
+        <slot />
+      </div>
+    </div>
+  </body>
+</html>
+
+<style is:global>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    line-height: 1.6;
+    color: #e2e8f0;
+    overflow-x: hidden;
+  }
+  
+  .app-container {
+    min-height: 100vh;
+    position: relative;
+  }
+  
+  .background-blur {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+      radial-gradient(circle at 20% 20%, rgba(30, 58, 138, 0.2) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(55, 48, 163, 0.2) 0%, transparent 50%),
+      radial-gradient(circle at 40% 60%, rgba(29, 78, 216, 0.15) 0%, transparent 50%);
+    filter: blur(40px);
+    z-index: -2;
+  }
+  
+  .background-gradient {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, 
+      rgba(17, 24, 39, 0.9) 0%, 
+      rgba(30, 41, 59, 0.8) 50%, 
+      rgba(17, 24, 39, 0.9) 100%);
+    z-index: -1;
+  }
+  
+  .content-wrapper {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+  }
+  
+  /* Smooth animations */
+  * {
+    transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease;
+  }
+  
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: rgba(31, 41, 55, 0.5);
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #1e3a8a 0%, #4c1d95 100%);
+    border-radius: 4px;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, #1e40af 0%, #5b21b6 100%);
+  }
+  
+  /* Focus styles for accessibility */
+  button:focus-visible,
+  a:focus-visible {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+  }
+  
+  /* Responsive typography */
+  @media (max-width: 768px) {
+    body {
+      font-size: 14px;
+    }
+  }
+  
+  /* Reduced motion for accessibility */
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+</style>

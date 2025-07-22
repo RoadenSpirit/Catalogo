@@ -1,0 +1,152 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom base styles */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    line-height: 1.6;
+    color: theme('colors.gray.900');
+  }
+  
+  * {
+    box-sizing: border-box;
+  }
+}
+
+/* Custom component styles */
+@layer components {
+  .btn {
+    @apply inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors duration-200;
+  }
+  
+  .btn-primary {
+    @apply bg-primary hover:bg-primary-dark text-white focus:ring-primary/50;
+  }
+  
+  .btn-secondary {
+    @apply bg-gray-200 hover:bg-gray-300 text-gray-900 focus:ring-gray-500/50;
+  }
+  
+  .card {
+    @apply bg-white rounded-lg shadow-md overflow-hidden;
+  }
+  
+  .card-hover {
+    @apply hover:shadow-lg transition-shadow duration-300;
+  }
+  
+  .container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+  
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  .loading {
+    @apply opacity-50 cursor-not-allowed;
+  }
+  
+  .loading::after {
+    content: '';
+    @apply inline-block ml-2 h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent;
+  }
+}
+
+/* Custom utility styles */
+@layer utilities {
+  .animation-delay-100 {
+    animation-delay: 100ms;
+  }
+  
+  .animation-delay-200 {
+    animation-delay: 200ms;
+  }
+  
+  .animation-delay-300 {
+    animation-delay: 300ms;
+  }
+  
+  .text-shadow {
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  }
+  
+  .backdrop-blur-sm {
+    backdrop-filter: blur(4px);
+  }
+  
+  .safe-area-inset {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+/* Responsive design helpers */
+@media (max-width: 640px) {
+  .container {
+    @apply px-4;
+  }
+  
+  .text-responsive {
+    @apply text-sm;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 1024px) {
+  .text-responsive {
+    @apply text-base;
+  }
+}
+
+@media (min-width: 1025px) {
+  .text-responsive {
+    @apply text-lg;
+  }
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Focus styles for keyboard navigation */
+.focus-visible {
+  @apply outline-none ring-2 ring-accent/50 ring-offset-2;
+}
+
+/* Print styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  .print-break {
+    page-break-before: always;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-gray-100;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-300 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-400;
+}

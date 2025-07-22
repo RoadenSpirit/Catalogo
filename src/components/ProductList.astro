@@ -1,0 +1,118 @@
+---
+import ProductCard from './ProductCard.astro';
+
+const { products, catalogType, pagination, currentPage } = Astro.props;
+const hasMore = pagination && currentPage < pagination.pageCount;
+---
+
+<section id="products" class="py-8">
+  <div class="container mx-auto px-4">
+    <div class="mb-8">
+      <h2 class="text-3xl font-bold text-gray-900 mb-2">Our Products</h2>
+      <p class="text-gray-600">
+        {catalogType === 'cafe' ? 'Fresh coffee and delicious food' : 'Sweet treats and candy delights'}
+      </p>
+    </div>
+    
+    {products.length === 0 ? (
+      <div class="text-center py-12">
+        <svg class="mx-auto h-12 w-12 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+        </svg>
+        <h3 class="text-lg font-medium text-gray-900 mb-2">No products found</h3>
+        <p class="text-gray-600">Check back later for new products!</p>
+      </div>
+    ) : (
+      <>
+        <div class="product-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
+          {products.map(product => (
+            <ProductCard product={product} catalogType={catalogType} />
+          ))}
+        </div>
+        
+        {hasMore && (
+          <div class="text-center">
+            <button 
+              id="load-more-btn"
+              class="bg-primary hover:bg-primary-dark text-white font-medium py-3 px-6 rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50"
+              data-current-page={currentPage}
+              data-total-pages={pagination.pageCount}
+            >
+              Load More Products
+            </button>
+          </div>
+        )}
+        
+        {pagination && (
+          <div class="mt-6 text-center text-sm text-gray-500">
+            Showing {(currentPage - 1) * pagination.pageSize + 1} to {Math.min(currentPage * pagination.pageSize, pagination.total)} of {pagination.total} products
+          </div>
+        )}
+      </>
+    )}
+  </div>
+</section>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const loadMoreBtn = document.getElementById('load-more-btn');
+    
+    if (loadMoreBtn) {
+      loadMoreBtn.addEventListener('click', async function() {
+        const currentPage = parseInt(this.dataset.currentPage);
+        const totalPages = parseInt(this.dataset.totalPages);
+        const nextPage = currentPage + 1;
+        
+        if (nextPage <= totalPages) {
+          this.disabled = true;
+          this.textContent = 'Loading...';
+          
+          try {
+            // This would normally make an API call
+            // For now, we'll just disable the button
+            window.location.href = `?page=${nextPage}`;
+          } catch (error) {
+            console.error('Error loading more products:', error);
+            this.disabled = false;
+            this.textContent = 'Load More Products';
+          }
+        }
+      });
+    }
+  });
+</script>
+
+<style>
+  .container {
+    max-width: 1200px;
+  }
+  
+  .product-grid {
+    min-height: 400px;
+  }
+  
+  @media (max-width: 640px) {
+    .product-grid {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+  }
+  
+  @media (min-width: 641px) and (max-width: 1024px) {
+    .product-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  @media (min-width: 1025px) and (max-width: 1280px) {
+    .product-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  
+  @media (min-width: 1281px) {
+    .product-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+</style>

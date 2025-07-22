@@ -1,0 +1,122 @@
+---
+import ProductCard from './ProductCard.astro';
+import { getProducts, getImageUrl } from '../utils/getProduct.js';
+
+// Fetch products from Strapi
+const { data: products } = await getProducts();
+console.log(getImageUrl)
+
+// Transform Strapi data to match ProductCard format
+const formattedProducts = products.map(product => ({
+  id: product.id,
+  name: product.attributes.name,
+  price: product.attributes.price,
+  category: product.attributes.category || 'Uncategorized',
+  image: getImageUrl(product.attributes.images)
+}));
+
+console.log(formattedProducts);
+---
+
+<section class="products-section">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">Featured Products</h2>
+      <p class="section-subtitle">Discover our carefully curated collection</p>
+    </div>
+    
+    <div class="products-grid">
+      {formattedProducts.map(product => (
+        <ProductCard product={product} />
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .products-section {
+    padding: 2rem 0 4rem 0;
+    position: relative;
+  }
+  
+  .container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+  
+  .section-header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+  
+  .section-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0 0 0.5rem 0;
+    letter-spacing: -0.02em;
+  }
+  
+  .section-subtitle {
+    font-size: 1.2rem;
+    color: #64748b;
+    margin: 0;
+    font-weight: 400;
+  }
+  
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 2rem;
+    animation: fadeInUp 0.8s ease-out;
+  }
+  
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .container {
+      padding: 0 1rem;
+    }
+    
+    .section-title {
+      font-size: 2rem;
+    }
+    
+    .section-subtitle {
+      font-size: 1rem;
+    }
+    
+    .products-grid {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+  }
+  
+  @media (min-width: 769px) and (max-width: 1024px) {
+    .products-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  @media (min-width: 1025px) and (max-width: 1400px) {
+    .products-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  
+  @media (min-width: 1401px) {
+    .products-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+</style>

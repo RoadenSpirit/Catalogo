@@ -1,0 +1,102 @@
+---
+const { images, productName } = Astro.props;
+const imageList = Array.isArray(images) ? images : [images];
+---
+
+<div class="image-carousel relative group">
+  <div class="carousel-container overflow-hidden rounded-lg">
+    <div class="carousel-track flex transition-transform duration-300 ease-in-out">
+      {imageList.map((image, index) => (
+        <div class="carousel-slide flex-shrink-0 w-full relative">
+          <img 
+            src={image.url || image}
+            alt={`${productName} - Image ${index + 1}`}
+            class="w-full h-48 object-cover bg-gray-100"
+            loading="lazy"
+          />
+        </div>
+      ))}
+    </div>
+  </div>
+  
+  {imageList.length > 1 && (
+    <div class="carousel-controls">
+      <button 
+        class="carousel-btn prev absolute left-2 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white rounded-full p-2 shadow-md opacity-0 group-hover:opacity-100 transition-opacity"
+        data-direction="prev"
+      >
+        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg>
+      </button>
+      
+      <button 
+        class="carousel-btn next absolute right-2 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white rounded-full p-2 shadow-md opacity-0 group-hover:opacity-100 transition-opacity"
+        data-direction="next"
+      >
+        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+      </button>
+      
+      <div class="carousel-indicators absolute bottom-2 left-1/2 transform -translate-x-1/2 flex space-x-2">
+        {imageList.map((_, index) => (
+          <button 
+            class={`indicator w-2 h-2 rounded-full transition-colors ${index === 0 ? 'bg-white' : 'bg-white/50'}`}
+            data-index={index}
+          ></button>
+        ))}
+      </div>
+    </div>
+  )}
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const carousels = document.querySelectorAll('.image-carousel');
+    
+    carousels.forEach(carousel => {
+      const track = carousel.querySelector('.carousel-track');
+      const slides = carousel.querySelectorAll('.carousel-slide');
+      const indicators = carousel.querySelectorAll('.indicator');
+      const prevBtn = carousel.querySelector('.prev');
+      const nextBtn = carousel.querySelector('.next');
+      
+      let currentIndex = 0;
+      
+      function updateCarousel() {
+        const translateX = -currentIndex * 100;
+        track.style.transform = `translateX(${translateX}%)`;
+        
+        indicators.forEach((indicator, index) => {
+          indicator.classList.toggle('bg-white', index === currentIndex);
+          indicator.classList.toggle('bg-white/50', index !== currentIndex);
+        });
+      }
+      
+      function goToSlide(index) {
+        currentIndex = (index + slides.length) % slides.length;
+        updateCarousel();
+      }
+      
+      if (prevBtn) {
+        prevBtn.addEventListener('click', () => goToSlide(currentIndex - 1));
+      }
+      
+      if (nextBtn) {
+        nextBtn.addEventListener('click', () => goToSlide(currentIndex + 1));
+      }
+      
+      indicators.forEach((indicator, index) => {
+        indicator.addEventListener('click', () => goToSlide(index));
+      });
+      
+      // Auto-advance carousel (optional)
+      if (slides.length > 1) {
+        setInterval(() => {
+          goToSlide(currentIndex + 1);
+        }, 5000);
+      }
+    });
+  });
+</script>

@@ -1,0 +1,15 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import ProductGrid from '../components/ProductGrid.astro';
+
+const settings = {
+  site_title: 'ModernShop',
+  description: 'Premium products for modern lifestyle'
+};
+---
+
+<Layout title={settings.site_title} description={settings.description}>
+  <Header settings={settings} />
+  <ProductGrid />
+</Layout>
