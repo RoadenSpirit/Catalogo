@@ -2,26 +2,27 @@ import { API_CONFIG } from '../config/api.js';
 export async function query(url: string) {
   try {
     if (!API_CONFIG.apiToken) {
-      console.error('[query] Error: STRAPI_API_TOKEN is not defined');
-      return null;
+      return null; // Silencioso, sin log
     }
+    
     const fullUrl = `${API_CONFIG.baseURL}/api${url}`;
-    console.log(`[query] Requesting URL: ${fullUrl}`);
-    const headers: HeadersInit = {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${API_CONFIG.apiToken}`
+    
+    const headers = {
+      'Authorization': `Bearer ${API_CONFIG.apiToken}`,
+      'Content-Type': 'application/json'
     };
-    const response = await fetch(fullUrl, { headers });
+
+    const response = await fetch(fullUrl, {
+      method: 'GET',
+      headers: headers
+    });
+
     if (!response.ok) {
-      console.error(`[query] Error fetching ${fullUrl}: ${response.status} ${response.statusText}`);
-      return null;
+      return null; // Silencioso en error, manejado en getProducts
     }
-    const data = await response.json();
-    console.log(`[query] Response data:`, data);
-    return data;
+
+    return await response.json();
   } catch (error) {
-    console.error(`[query] Error fetching ${url}:`, error);
-    return null;
+    return null; // Silencioso, sin log
   }
 }
