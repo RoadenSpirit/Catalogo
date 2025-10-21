@@ -1,153 +1,64 @@
 ---
+// src/components/ProductGrid.astro
 import ProductCard from './ProductCard.astro';
-import { getProducts, getImageUrl } from '../utils/getProduct.js';
+import { getProducts } from '../utils/getProduct.js';
 import { API_CONFIG } from '../config/api';
 
-// Fetch products
-const { data: products, error } = await getProducts();
-
-// Transform data, filtrando productos inválidos
-const formattedProducts = error ? [] : products?.map(product => {
-  try {
-    // Validar que nombre y precio existan
-    if (!product.attributes.nombre || !product.attributes.precio) {
-      return null;
-    }
-    return {
-      id: product.id,
-      name: product.attributes.nombre,
-      price: product.attributes.precio,
-      category: product.attributes.category || 'Uncategorized',
-      image: getImageUrl(product.attributes.imagen) // Cambiado de 'images' a 'imagen'
-    };
-  } catch (e) {
-    return null;
-  }
-}).filter(Boolean) || [];
-
-console.log('[ProductGrid] Final formatted products:', {
-  count: formattedProducts.length,
-  productsWithImages: formattedProducts.filter(p => p.image !== '/placeholder-image.jpg').length,
-  categories: [...new Set(formattedProducts.map(p => p.category))]
-});
+const { data: products, error, pagination } = await getProducts();
 ---
-<!-- Template y estilos sin cambios -->
 
-<section class="products-section">
-  <div class="container">
-    {formattedProducts.length > 0 ? (
-      <div class="products-grid">
-        {formattedProducts.map(product => (  // Cambiado: Usa formattedProducts directamente
-          <ProductCard product={product} />
+<section class="py-6">
+  <div class="container max-w-7xl mx-auto px-3 sm:px-4">
+
+    <!-- ERROR -->
+    {error && (
+      <div class="bg-slate-800/70 backdrop-blur-sm border border-dashed border-slate-600 rounded-2xl p-6 max-w-md mx-auto text-center">
+        <p class="text-red-400 font-semibold text-base">{error.message}</p>
+      </div>
+    )}
+
+    <!-- SIN PRODUCTOS -->
+    {!error && products.length === 0 && (
+      <div class="bg-slate-800/70 backdrop-blur-sm border border-dashed border-slate-600 rounded-2xl p-8 max-w-md mx-auto text-center">
+        <svg class="w-14 h-14 text-gray-500 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+        </svg>
+        <p class="text-gray-400 text-base">{API_CONFIG.errors.NO_PRODUCTS}</p>
+      </div>
+    )}
+
+    <!-- PRODUCTOS -->
+    {!error && products.length > 0 && (
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+        {products.map((product, index) => (
+          <div
+            class="animate-fade-in-up"
+            style={`animation-delay: ${Math.min(index * 60, 500)}ms;`}
+          >
+            <ProductCard product={product} />
+          </div>
         ))}
       </div>
-    ) : (
-      <div class="no-products-message">  // Unificado: Mensaje genérico para cualquier caso sin productos
-        <p>No hay productos disponibles actualmente.</p>
+    )}
+
+    <!-- PAGINACIÓN -->
+    {pagination.pageCount > 1 && (
+      <div class="text-center mt-8">
+        <p class="text-xs text-gray-500">
+          Página {pagination.page} de {pagination.pageCount}
+        </p>
       </div>
     )}
   </div>
 </section>
 
-<style>
-  /* Estilos mantenidos iguales, pero eliminamos .error-banner y .error-message ya que no se usan */
-  .products-section {
-    padding: 2rem 0 4rem 0;
-    position: relative;
-  }
-  
-  .container {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 0 2rem;
-  }
-  
-  .section-header {
-    text-align: center;
-    margin-bottom: 3rem;
-  }
-  
-  .section-title {
-    font-size: 2.5rem;
-    font-weight: 700;
-    color: #1e293b;
-    margin: 0 0 0.5rem 0;
-    letter-spacing: -0.02em;
-  }
-  
-  .section-subtitle {
-    font-size: 1.2rem;
-    color: #64748b;
-    margin: 0;
-    font-weight: 400;
-  }
-  
-  .products-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 2rem;
-    animation: fadeInUp 0.8s ease-out;
-  }
-  
+<style is:global>
   @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(30px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
   }
-  
-  @media (max-width: 768px) {
-    .container {
-      padding: 0 1rem;
-    }
-    
-    .section-title {
-      font-size: 2rem;
-    }
-    
-    .section-subtitle {
-      font-size: 1rem;
-    }
-    
-    .products-grid {
-      grid-template-columns: 1fr;
-      gap: 1.5rem;
-    }
-  }
-  
-  @media (min-width: 769px) and (max-width: 1024px) {
-    .products-grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
-  }
-  
-  @media (min-width: 1025px) and (max-width: 1400px) {
-    .products-grid {
-      grid-template-columns: repeat(3, 1fr);
-    }
-  }
-  
-  @media (min-width: 1401px) {
-    .products-grid {
-      grid-template-columns: repeat(4, 1fr);
-    }
-  }
-
-  .no-products-message {
-    text-align: center;
-    padding: 3rem;
-    background: #f8f9fa;
-    border-radius: 0.5rem;
-    margin: 2rem 0;
-  }
-  
-  .no-products-message p {
-    font-size: 1.2rem;
-    color: #6c757d;
-    margin: 0;
+  .animate-fade-in-up {
+    opacity: 0;
+    animation: fadeInUp 0.5s ease-out forwards;
   }
 </style>
