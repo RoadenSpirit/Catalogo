@@ -1,3 +1,5 @@
+import { config } from "dotenv";
+
 const { STRAPI_HOST, STRAPI_API_TOKEN } = process.env;
 
 console.log(JSON.stringify({
@@ -16,6 +18,7 @@ export const API_CONFIG = {
   endpoints: {
     products: '/productos',
     settings: '/settings',
+    config: '/config'
   },
   errors: {
     NO_PRODUCTS: 'No hay productos disponibles actualmente.',
@@ -37,11 +40,11 @@ export const API_CONFIG = {
 };
 
 export const DEFAULT_SETTINGS = {
-  catalog_type: 'cafe',
+  heroTitle: 'Product Catalog',
+  subTitle: 'Welcome to our product catalog',
+  background: '/default-background.jpg',  // Add a local fallback image if needed
   logo: '/favicon.svg',
-  background: '#ADD8E6',
-  site_title: 'Product Catalog',
-  description: 'Welcome to our product catalog'
+  catalog_type: 'cafe',  // Keep existing if relevant
 };
 
 export const CATALOG_TYPES = {

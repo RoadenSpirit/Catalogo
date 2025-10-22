@@ -1,97 +1,61 @@
 ---
-const { settings } = Astro.props;
+// src/components/Header.astro
+export interface Props {
+  title: string;
+  subtitle: string;
+  logo?: string;  // Hacemos optional para fallback
+}
+
+const { title, subtitle, logo } = Astro.props;
 ---
 
-<header class="header-container">
-  <div class="logo-section">
-    <div class="logo-circle">
-      <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="24" cy="24" r="20" fill="url(#gradient1)" stroke="white" stroke-width="2"/>
-        <path d="M16 24L20 28L32 16" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-        <defs>
-          <linearGradient id="gradient1" x1="4" y1="4" x2="44" y2="44" gradientUnits="userSpaceOnUse">
-            <stop stop-color="#667eea"/>
-            <stop offset="1" stop-color="#764ba2"/>
-          </linearGradient>
-        </defs>
-      </svg>
+<header class="py-8 md:py-12 text-center relative z-10">
+  <div class="flex flex-col items-center gap-4">
+    <div class={[
+      "w-20 h-20 rounded-full flex items-center justify-center shadow-lg shadow-blue-500/30 transition duration-300 ease-in-out animate-bounce overflow-hidden",
+      logo ? "bg-transparent" : "bg-gradient-to-br from-blue-500 to-blue-700 hover:shadow-blue-500/40"
+    ].join(' ')}>
+      {logo && (logo.startsWith('http') || logo.startsWith('/')) ? (
+        <img 
+          src={logo} 
+          alt={`${title} Logo`} 
+          class="w-full h-full object-cover"  
+          loading="eager"
+        />
+      ) : (
+        <!-- SVG fallback con colores azules -->
+        <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="24" cy="24" r="20" fill="url(#gradient1)" stroke="white" stroke-width="2"/>
+          <path d="M16 24L20 28L32 16" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          <defs>
+            <linearGradient id="gradient1" x1="4" y1="4" x2="44" y2="44" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#3b82f6"/>  <!-- Azul medio -->
+              <stop offset="1" stop-color="#1d4ed8"/>  <!-- Azul oscuro -->
+            </linearGradient>
+          </defs>
+        </svg>
+      )}
     </div>
-    <div class="brand-info">
-      <h1 class="brand-title">{settings.site_title}</h1>
-      <p class="brand-subtitle">{settings.description}</p>
+    <div class="text-center">
+      <h1 class="text-4xl md:text-5xl font-bold bg-gradient-to-br from-blue-500 to-blue-700 bg-clip-text text-transparent leading-tight">
+        {title}
+      </h1>
+      <p class="text-lg md:text-xl text-gray-300 font-normal opacity-90 mt-1">
+        {subtitle}
+      </p>
     </div>
   </div>
 </header>
 
+<!-- Mínimo CSS para animaciones custom si animate-bounce no es exacto; de lo contrario, remueve esto -->
 <style>
-  .header-container {
-    padding: 2rem 0 3rem 0;
-    text-align: center;
-    position: relative;
-    z-index: 10;
-  }
-  
-  .logo-section {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
-  }
-  
-  .logo-circle {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  /* Si quieres exacto al original, usa arbitrary animation */
+  .animate-bounce {
     animation: float 3s ease-in-out infinite;
   }
-  
-  .logo-circle:hover {
-    transform: translateY(-5px) scale(1.05);
-    box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
-  }
-  
-  .brand-title {
-    font-size: 2.5rem;
-    font-weight: 700;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin: 0;
-    letter-spacing: -0.02em;
-  }
-  
-  .brand-subtitle {
-    font-size: 1.1rem;
-    color: #64748b;
-    margin: 0;
-    font-weight: 400;
-  }
-  
+
   @keyframes float {
-    0%, 100% { transform: translateY(0px); }
+    0%, 100% { transform: translateY(0); }
     50% { transform: translateY(-10px); }
   }
-  
-  @media (max-width: 768px) {
-    .brand-title {
-      font-size: 2rem;
-    }
-    
-    .brand-subtitle {
-      font-size: 1rem;
-    }
-    
-    .logo-circle {
-      width: 70px;
-      height: 70px;
-    }
-  }
 </style>
-</header>

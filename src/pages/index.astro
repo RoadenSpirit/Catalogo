@@ -1,15 +1,37 @@
 ---
+// src/pages/index.astro
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import ProductGrid from '../components/ProductGrid.astro';
+import { getConfig } from '../utils/getConfig.js';
 
-const settings = {
-  site_title: 'ModernShop',
-  description: 'Premium products for modern lifestyle'
-};
+// Obtener config desde Strapi
+const { data: config, error } = await getConfig();
+
+// LOG DETALLADO DE CONFIGURACIÓN
+console.log('%c[Index] Configuración obtenida desde Strapi:', 'color: #8b5cf6; font-weight: bold;');
+console.log({
+  heroTitle: config.heroTitle,
+  subTitle: config.subTitle,
+  background: config.background,
+  logo: config.logo,
+  error: error ? error.message : null
+});
+
+// Valores por defecto si falla Strapi
+const {
+  heroTitle = 'ModernShop',
+  subTitle = 'Premium products for modern lifestyle',
+  background = null,
+  logo = '/favicon.svg'
+} = config;
 ---
 
-<Layout title={settings.site_title} description={settings.description}>
-  <Header settings={settings} />
+<Layout background={background}>
+  <Header 
+    title={heroTitle}
+    subtitle={subTitle}
+    logo={logo}
+  />
   <ProductGrid />
 </Layout>

@@ -1,13 +1,11 @@
 ---
+// src/layouts/Layout.astro
 export interface Props {
-  title?: string;
-  description?: string;
+  background?: string;
 }
 
-const { 
-  title = 'Modern Product Catalog', 
-  description = 'Discover amazing products in our modern catalog'
-} = Astro.props;
+const { background } = Astro.props;
+console.log('%c[Layout] Background recibido:', 'color: #10b981; font-weight: bold;', background);
 ---
 
 <!DOCTYPE html>
@@ -17,22 +15,29 @@ const {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
-    <title>{title}</title>
-    <meta name="description" content={description} />
-    
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
-    <!-- SEO Meta Tags -->
-    <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
-    <meta property="og:type" content="website" />
+    <title>Modern Product Catalog</title>
+    <meta name="description" content="Discover amazing products in our modern catalog" />
   </head>
-  <body>
+
+  <body class="min-h-screen">
     <div class="app-container">
-      <div class="background-wood"></div>
+      <!-- SOLO LA FOTO -->
+      {background && (
+        <div 
+          class="background-image"
+          style={`
+            background-image: url("${background}");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+          `}
+        ></div>
+      )}
+
+      <!-- OVERLAY OSCURO SUAVE (para legibilidad del texto) -->
+      {background && <div class="background-overlay"></div>}
+
+      <!-- CONTENIDO -->
       <div class="content-wrapper">
         <slot />
       </div>
@@ -41,90 +46,43 @@ const {
 </html>
 
 <style is:global>
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-  
-  html {
-    scroll-behavior: smooth;
-  }
-  
-  body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    line-height: 1.6;
-    color: #e2e8f0;
-    overflow-x: hidden;
-  }
-  
   .app-container {
     min-height: 100vh;
     position: relative;
+    background: transparent;
+    overflow: hidden;
   }
-  
-  .background-wood {
+
+  /* 1. IMAGEN DE FONDO */
+  .background-image {
     position: fixed;
-    top: 0;
-    left: 0;
+    top: 0; left: 0;
     width: 100%;
     height: 100%;
-    background-image: url('/src/assets/dark-wood-texture.jpg'); 
-    background-repeat: repeat;
-    background-size: 200px; /* Patrón repetido claro; ajusta si necesitas más densidad (e.g., 100px) o cover si no es seamless */
     z-index: -2;
-    /* Sin opacity, filter ni blend-mode para mostrar la imagen tal cual se importa */
   }
-  
+
+  /* 2. OVERLAY OSCURO (muy suave) */
+  .background-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.3); /* 30% negro → suave */
+    z-index: -1;
+    pointer-events: none;
+  }
+
   .content-wrapper {
     position: relative;
     z-index: 1;
     min-height: 100vh;
   }
-  
-  /* Smooth animations */
-  * {
-    transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease;
-  }
-  
-  /* Custom scrollbar */
-  ::-webkit-scrollbar {
-    width: 8px;
-  }
-  
-  ::-webkit-scrollbar-track {
-    background: rgba(31, 41, 55, 0.5);
-  }
-  
-  ::-webkit-scrollbar-thumb {
-    background: linear-gradient(135deg, #D97706 0%, #8B4513 100%); /* Tonos ámbar/marrón para tema madera */
-    border-radius: 4px;
-  }
-  
-  ::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(135deg, #F59E0B 0%, #A0522D 100%);
-  }
-  
-  /* Focus styles for accessibility */
-  button:focus-visible,
-  a:focus-visible {
-    outline: 2px solid #D97706; /* Ámbar para tema café */
-    outline-offset: 2px;
-  }
-  
-  /* Responsive typography */
+
+  /* Responsive */
   @media (max-width: 768px) {
-    body {
-      font-size: 14px;
-    }
-  }
-  
-  /* Reduced motion for accessibility */
-  @media (prefers-reduced-motion: reduce) {
-    * {
-      animation-duration: 0.01ms !important;
-      animation-iteration-count: 1 !important;
-      transition-duration: 0.01ms !important;
+    .background-image {
+      background-attachment: scroll;
     }
   }
 </style>
