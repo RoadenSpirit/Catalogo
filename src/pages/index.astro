@@ -8,16 +8,6 @@ import { getConfig } from '../utils/getConfig.js';
 // Obtener config desde Strapi
 const { data: config, error } = await getConfig();
 
-// LOG DETALLADO DE CONFIGURACIÓN
-console.log('%c[Index] Configuración obtenida desde Strapi:', 'color: #8b5cf6; font-weight: bold;');
-console.log({
-  heroTitle: config.heroTitle,
-  subTitle: config.subTitle,
-  background: config.background,
-  logo: config.logo,
-  error: error ? error.message : null
-});
-
 // Valores por defecto si falla Strapi
 const {
   heroTitle = 'ModernShop',

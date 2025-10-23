@@ -56,19 +56,20 @@ export async function getProducts() {
       };
     }
 
+
     const formattedProducts = response.data.map(product => {
       const attrs = product.attributes;
       return {
-        id: product.id || 0,
-        name: attrs.name || 'Unnamed Product',
+        id: product.id,
+        name: attrs.name || 'Sin nombre',
         price: attrs.price || 0,
-        category: attrs.category || 'Uncategorized',
+        category: attrs.category || 'General',
         image: getImageUrl(attrs.images),
-        // ← AMBOS CAMPOS
-        description: attrs.description || 'Sin descripción completa disponible.',
-        shortDescription: attrs.shortDescription || 'Producto premium con materiales seleccionados.'
+        shortDescription: attrs.shortDescription || 'Producto de calidad.',
+        description: attrs.description || '',
+        slug: attrs.slug || `producto-${product.id}` // ← NUEVO
       };
-    });
+  });
 
     console.log(`[getProducts] Successfully fetched and formatted ${formattedProducts.length} products`);
     console.log('[getProducts] Formatted products sample:', JSON.stringify(
