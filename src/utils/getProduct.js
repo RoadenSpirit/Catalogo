@@ -1,6 +1,7 @@
+// src/utils/getProduct.js
 import { query } from './strapiConnect.js';
 import { API_CONFIG } from '../config/api.js';
-import { getImageUrl } from './getImageUrl.js';  // Import externo
+import { getImageUrl } from './getImageUrl.js';
 
 export async function getProducts() {
   const url = `${API_CONFIG.endpoints.products}?populate=images`;
@@ -13,7 +14,14 @@ export async function getProducts() {
       data: response?.data?.map((item, index) => ({
         index,
         id: item.id,
-        attributes: item.attributes
+        attributes: {
+          name: item.attributes.name,
+          price: item.attributes.price,
+          category: item.attributes.category,
+          description: item.attributes.description,        // ← MANTENIDO
+          shortDescription: item.attributes.shortDescription, // ← NUEVO
+          images: item.attributes.images
+        }
       })) || [],
       meta: response?.meta || {}
     }, null, 2));
@@ -48,16 +56,28 @@ export async function getProducts() {
       };
     }
 
-    const formattedProducts = response.data.map(product => ({
-      id: product.id || 0,
-      name: product.attributes.name || 'Unnamed Product',
-      price: product.attributes.price || 0,
-      category: product.attributes.category || 'Uncategorized',
-      image: getImageUrl(product.attributes.images)  // Usamos función externa
-    }));
+    const formattedProducts = response.data.map(product => {
+      const attrs = product.attributes;
+      return {
+        id: product.id || 0,
+        name: attrs.name || 'Unnamed Product',
+        price: attrs.price || 0,
+        category: attrs.category || 'Uncategorized',
+        image: getImageUrl(attrs.images),
+        // ← AMBOS CAMPOS
+        description: attrs.description || 'Sin descripción completa disponible.',
+        shortDescription: attrs.shortDescription || 'Producto premium con materiales seleccionados.'
+      };
+    });
 
     console.log(`[getProducts] Successfully fetched and formatted ${formattedProducts.length} products`);
-    console.log('[getProducts] Formatted products:', JSON.stringify(formattedProducts, null, 2));
+    console.log('[getProducts] Formatted products sample:', JSON.stringify(
+      formattedProducts.map(p => ({
+        id: p.id,
+        name: p.name,
+        shortDescription: p.shortDescription,
+        hasFullDescription: !!p.description && p.description.length > 50
+      })), null, 2));
     
     return {
       data: formattedProducts,

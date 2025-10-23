@@ -3,17 +3,18 @@
 export interface Props {
   title: string;
   subtitle: string;
-  logo?: string;  // Hacemos optional para fallback
+  logo?: string;
 }
 
 const { title, subtitle, logo } = Astro.props;
 ---
 
-<header class="py-8 md:py-12 text-center relative z-10">
-  <div class="flex flex-col items-center gap-4">
+<header class="py-10 md:py-16 text-center relative z-10">
+  <div class="flex flex-col items-center gap-5 max-w-4xl mx-auto px-4">
+    <!-- Logo más grande -->
     <div class={[
-      "w-20 h-20 rounded-full flex items-center justify-center shadow-lg shadow-blue-500/30 transition duration-300 ease-in-out animate-bounce overflow-hidden",
-      logo ? "bg-transparent" : "bg-gradient-to-br from-blue-500 to-blue-700 hover:shadow-blue-500/40"
+      "w-24 h-24 md:w-28 md:h-28 rounded-full flex items-center justify-center shadow-xl shadow-blue-600/40 transition duration-300 ease-in-out animate-float overflow-hidden border-4 border-slate-800/50",
+      logo ? "bg-transparent" : "bg-gradient-to-br from-blue-500 to-blue-700"
     ].join(' ')}>
       {logo && (logo.startsWith('http') || logo.startsWith('/')) ? (
         <img 
@@ -23,39 +24,47 @@ const { title, subtitle, logo } = Astro.props;
           loading="eager"
         />
       ) : (
-        <!-- SVG fallback con colores azules -->
-        <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="24" cy="24" r="20" fill="url(#gradient1)" stroke="white" stroke-width="2"/>
-          <path d="M16 24L20 28L32 16" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- SVG fallback más grande y elegante -->
+        <svg width="56" height="56" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg" class="drop-shadow-md">
+          <circle cx="28" cy="28" r="24" fill="url(#gradient1)" stroke="white" stroke-width="2.5"/>
+          <path d="M18 28L23 33L38 18" stroke="white" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
           <defs>
-            <linearGradient id="gradient1" x1="4" y1="4" x2="44" y2="44" gradientUnits="userSpaceOnUse">
-              <stop stop-color="#3b82f6"/>  <!-- Azul medio -->
-              <stop offset="1" stop-color="#1d4ed8"/>  <!-- Azul oscuro -->
+            <linearGradient id="gradient1" x1="4" y1="4" x2="52" y2="52" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#3b82f6"/>
+              <stop offset="1" stop-color="#1d4ed8"/>
             </linearGradient>
           </defs>
         </svg>
       )}
     </div>
-    <div class="text-center">
-      <h1 class="text-4xl md:text-5xl font-bold bg-gradient-to-br from-blue-500 to-blue-700 bg-clip-text text-transparent leading-tight">
+
+    <!-- Título y subtítulo con ancho máximo -->
+    <div class="max-w-2xl mx-auto">
+      <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-br from-blue-400 to-blue-700 bg-clip-text text-transparent leading-tight tracking-tight">
         {title}
       </h1>
-      <p class="text-lg md:text-xl text-gray-300 font-normal opacity-90 mt-1">
+      <p class="text-lg md:text-xl lg:text-2xl text-gray-300 font-light opacity-90 mt-2 leading-relaxed">
         {subtitle}
       </p>
     </div>
   </div>
 </header>
 
-<!-- Mínimo CSS para animaciones custom si animate-bounce no es exacto; de lo contrario, remueve esto -->
 <style>
-  /* Si quieres exacto al original, usa arbitrary animation */
-  .animate-bounce {
-    animation: float 3s ease-in-out infinite;
+  /* Animación suave de flotación */
+  @keyframes float {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-12px) rotate(1deg); }
   }
 
-  @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
+  .animate-float {
+    animation: float 4s ease-in-out infinite;
+  }
+
+  /* Mejora de legibilidad en pantallas grandes */
+  @media (min-width: 768px) {
+    .max-w-2xl h1 {
+      line-height: 1.1;
+    }
   }
 </style>
