@@ -4,10 +4,12 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: '#ADD8E6',
-        'primary-dark': '#87CEEB',
-        'primary-light': '#E6F3FF',
-        accent: '#4A90E2',
+        'milk-white': '#faf1e0',
+        'golden-yellow': '#ffde59',
+        'price-green': '#34D399', // Un verde esmeralda para los precios
+        'product-orange': '#fb7701', // Nuevo naranja para precios
+        primary: '#faf1e0',
+        accent: '#ffde59',
         gray: {
           50: '#F9FAFB',
           100: '#F3F4F6',
