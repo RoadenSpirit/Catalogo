@@ -18,8 +18,10 @@ export async function getProducts() {
           name: item.attributes.name,
           price: item.attributes.price,
           category: item.attributes.category,
-          description: item.attributes.description,        // ← MANTENIDO
-          shortDescription: item.attributes.shortDescription, // ← NUEVO
+          description: item.attributes.description,
+          shortDescription: item.attributes.shortDescription,
+          discountPrice: item.attributes.discountPrice,  // ← NUEVO: Campo de precio con descuento
+          quantity: item.attributes.quantity,            // ← NUEVO: Campo de cantidad
           images: item.attributes.images
         }
       })) || [],
@@ -56,7 +58,6 @@ export async function getProducts() {
       };
     }
 
-
     const formattedProducts = response.data.map(product => {
       const attrs = product.attributes;
       return {
@@ -67,9 +68,11 @@ export async function getProducts() {
         image: getImageUrl(attrs.images),
         shortDescription: attrs.shortDescription || 'Producto de calidad.',
         description: attrs.description || '',
-        slug: attrs.slug || `producto-${product.id}` // ← NUEVO
+        slug: attrs.slug || `producto-${product.id}`,
+        discountPrice: attrs.discountPrice || null,  // ← NUEVO: Precio con descuento (null si no existe)
+        quantity: attrs.quantity || 0                // ← NUEVO: Cantidad disponible (0 si no existe)
       };
-  });
+    });
 
     console.log(`[getProducts] Successfully fetched and formatted ${formattedProducts.length} products`);
     console.log('[getProducts] Formatted products sample:', JSON.stringify(
@@ -77,7 +80,9 @@ export async function getProducts() {
         id: p.id,
         name: p.name,
         shortDescription: p.shortDescription,
-        hasFullDescription: !!p.description && p.description.length > 50
+        hasFullDescription: !!p.description && p.description.length > 50,
+        discountPrice: p.discountPrice,  // ← NUEVO: Incluir en el sample log
+        quantity: p.quantity             // ← NUEVO: Incluir en el sample log
       })), null, 2));
     
     return {
